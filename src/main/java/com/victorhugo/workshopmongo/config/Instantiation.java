@@ -15,6 +15,7 @@ import com.victorhugo.workshopmongo.dto.AuthorDTO;
 import com.victorhugo.workshopmongo.dto.CommentDTO;
 import com.victorhugo.workshopmongo.repository.PostRepository;
 import com.victorhugo.workshopmongo.repository.UserRepository;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class Instantiation implements CommandLineRunner {
