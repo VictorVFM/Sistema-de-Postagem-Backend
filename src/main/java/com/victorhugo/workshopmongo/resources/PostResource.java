@@ -4,7 +4,9 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
+import com.victorhugo.workshopmongo.dto.CommentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +29,7 @@ public class PostResource {
 		return ResponseEntity.ok().body(list);
 	}
 
-	@RequestMapping(method =RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Void> insert(@RequestBody Post objPost){
 		service.insert(objPost);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(objPost.getId()).toUri();
@@ -38,6 +40,27 @@ public class PostResource {
 	public ResponseEntity<Post>  findById(@PathVariable String id){
 		Post obj = service.findById(id);
 		return ResponseEntity.ok().body(obj);
+	}
+
+	@RequestMapping(value = "/{postId}/comments",method = RequestMethod.POST)
+	public ResponseEntity<Void> addCommentToPost(@PathVariable String postId, @RequestBody CommentDTO comment){
+		try {
+			service.addCommentToPost(postId,comment);
+			return ResponseEntity.ok().build();
+		}catch (Exception e){
+			System.out.println("Erro: " + e.getMessage());
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	@RequestMapping(value = "/{postId}/comments", method = RequestMethod.DELETE)
+	public ResponseEntity<Void> removeAllCommentsToPost(@PathVariable String postId){
+		try{
+			service.removeAllCommentsToPost(postId);
+			return ResponseEntity.ok().build();
+		}catch (Exception e){
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
 	@RequestMapping(value="/titlesearch",method = RequestMethod.GET)
@@ -59,4 +82,6 @@ public class PostResource {
 		List<Post> list = service.fullSearch(text,min,max);
 		return ResponseEntity.ok().body(list);
 	}
+
+
 }
